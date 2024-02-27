@@ -1,8 +1,7 @@
-import NextAuth from "next-auth";
-import { getToken } from "next-auth/jwt";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from 'next-auth/providers/credentials';
 
-const handler = NextAuth({
+export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             id: "signIn-path",
@@ -56,22 +55,21 @@ const handler = NextAuth({
             },
         }),
     ],
+    session: {
+        strategy: "jwt"
+    },
     callbacks: {
-        async jwt({ token, account, user }) {
-            if (Date.now() < token.exp * 1000) {
-                return token;
+        async jwt({ user, token }) {
+            if (user) {
+                token.user = { ...user, username: user.data.split(" , ")[2]!, id: user?.data.split(" , ")[1]!, role: user.data.split(" , ")[3]! }
             }
             return token
         },
         async session({ session, token }) {
-            if (Date.now() < token.exp * 1000) {
-                return session;
+            if (token?.user) {
+                session.user = token.user;
             }
-            return {
-                user: { id: '' },
-                expires: 0,
-                accessToken: '',
-            };
+            return session
         },
     },
     pages: {
@@ -80,8 +78,8 @@ const handler = NextAuth({
         signOut: "/",
         newUser: "/register"
     }
-});
+};
 
 
-
+const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
