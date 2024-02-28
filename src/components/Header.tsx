@@ -29,6 +29,28 @@ const Header = async () => {
         </>
       ) : (
         <>
+          {session?.user?.role == "Admin" && (
+            <>
+              <Link
+                href={"/users-orders"}
+                className="py-2 px-3 hover:bg-green-300 transition-all duration-300 text-black rounded-md bg-white"
+              >
+                Users Orders
+              </Link>
+              <Link
+                href={"/change-role"}
+                className="py-2 px-3 hover:bg-green-300 transition-all duration-300 text-black rounded-md bg-white"
+              >
+                Change Role
+              </Link>
+              <Link
+                href={"/dashboard"}
+                className="py-2 px-3 hover:bg-green-300 transition-all duration-300 text-black rounded-md bg-white"
+              >
+                Dashboard
+              </Link>
+            </>
+          )}
           <Link
             href="/profile"
             className="py-2 px-3 hover:bg-green-300 transition-all duration-300 text-black rounded-md bg-white"
